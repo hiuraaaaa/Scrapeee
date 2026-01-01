@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// helper: chunk HTML per 1500 karakter
+// chunk HTML per 1500 karakter
 function chunkHTML(html, chunkSize = 1500) {
   const chunks = [];
   let start = 0;
@@ -11,41 +11,49 @@ function chunkHTML(html, chunkSize = 1500) {
   return chunks;
 }
 
-// Helper: call NekoLabs GPT API
-async function callNekoLabs(prompt, sessionId) {
-  try {
-    const response = await axios.post(
-      "https://api.nekolabs.web.id/text.gen/gpt/5",
-      {
+// Daftar AI endpoints (fallback)
+const AIs = [
+  { name: "NekoLabs 5-mini", url: "https://api.nekolabs.web.id/text.gen/gpt/5-mini", sessionId: "neko1" },
+  { name: "NekoLabs 4.1-nano", url: "https://api.nekolabs.web.id/text.gen/gpt/4.1-nano", sessionId: "neko2" }
+];
+
+// fungsi panggil AI dengan fallback
+async function callAIWithFallback(prompt) {
+  for (const ai of AIs) {
+    try {
+      const res = await axios.post(ai.url, {
         text: prompt,
         systemPrompt: "Kamu adalah asisten yang merangkum website untuk scraping",
-        sessionId
-      },
-      { timeout: 60000 } // 60 detik timeout
-    );
+        sessionId: ai.sessionId
+      }, { timeout: 60000 }); // 60 detik timeout
 
-    if (response.data?.success) return response.data.result;
+      if (res.data?.success) return { result: res.data.result, ai: ai.name };
 
-    // jika limit akun
-    if (response.data?.result?.includes("You have reached your AI usage limit")) {
-      return "❌ AI limit reached for this chunk";
+      // detect limit
+      if (res.data?.result?.includes("You have reached your AI usage limit")) {
+        console.log(`Chunk skipped, ${ai.name} limit reached`);
+        continue; // fallback ke AI berikutnya
+      }
+
+      // jika error lain
+      return { result: `❌ AI Error: ${res.data?.result || "Unknown"}`, ai: ai.name };
+
+    } catch (err) {
+      console.log(`Chunk failed on ${ai.name}: ${err.message}`);
+      continue; // fallback ke AI berikutnya
     }
-
-    return `❌ AI Error: ${response.data?.result || "Unknown"}`;
-  } catch (err) {
-    // tangani timeout atau network error
-    return `❌ Request failed: ${err.message}`;
   }
+  return { result: "❌ Semua AI gagal untuk chunk ini", ai: null };
 }
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { html, sessionId = "12345" } = req.body;
+  const { html } = req.body;
   if (!html) return res.status(400).json({ error: "HTML content required" });
 
   const chunks = chunkHTML(html, 1500);
-  let allSummaries = [];
+  const allResults = [];
 
   try {
     for (let i = 0; i < chunks.length; i++) {
@@ -60,15 +68,22 @@ HTML:
 ${chunks[i]}
 `;
 
-      const result = await callNekoLabs(prompt, sessionId);
-      allSummaries.push(result);
+      // panggil AI dengan fallback
+      const { result, ai } = await callAIWithFallback(prompt);
+      allResults.push({ chunk: i + 1, aiUsed: ai, result });
 
-      // optional: log ke console untuk debug / frontend SSE
-      console.log(`Chunk ${i + 1}/${chunks.length} done:`, result.slice(0, 60), "...");
+      // log ke console / frontend
+      console.log(`Chunk ${i + 1}/${chunks.length} done (AI: ${ai || "none"}): ${result.slice(0,60)}...`);
     }
 
-    const finalSummary = allSummaries.join("\n\n");
-    res.status(200).json({ summary: finalSummary, chunks: allSummaries.length });
+    const finalSummary = allResults.map(c => `Chunk ${c.chunk} (AI: ${c.aiUsed || "none"}):\n${c.result}`).join("\n\n");
+
+    res.status(200).json({
+      success: true,
+      totalChunks: chunks.length,
+      summary: finalSummary,
+      details: allResults
+    });
 
   } catch (err) {
     res.status(500).json({ error: "AI analysis failed", details: err.message });
