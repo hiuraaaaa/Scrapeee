@@ -3,25 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scraper + AI JSON | Glassmorphism</title>
+<title>NeoGlass Scraper | AI-Powered Web Analysis</title>
 <style>
 /* Import Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
   --primary: #a78bfa;
   --primary-dark: #7c3aed;
+  --primary-light: #c4b5fd;
   --accent: #8b5cf6;
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.18);
+  --purple-900: #1e1b4b;
+  --purple-800: #312e81;
+  --purple-700: #4338ca;
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.15);
   --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --terminal-bg: rgba(15, 23, 42, 0.8);
+  --text-secondary: #e2e8f0;
+  --text-tertiary: #94a3b8;
+  --terminal-bg: rgba(15, 23, 42, 0.75);
   --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 25px 70px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 35px 100px rgba(103, 58, 183, 0.2);
 }
 
 * {
@@ -32,115 +39,238 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
-  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  background: linear-gradient(135deg, #0a0a14 0%, #1a1a2e 30%, #2d1b69 70%, #1e0b3b 100%);
   color: var(--text-primary);
   min-height: 100vh;
-  padding: 20px;
-  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Background Mesh Gradient */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(167, 139, 250, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.08) 0%, transparent 50%);
+  z-index: -2;
+}
+
+/* Bokeh Lights */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.03) 2px, transparent 2px),
+    radial-gradient(circle at 85% 75%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 65% 15%, rgba(255, 255, 255, 0.02) 3px, transparent 3px),
+    radial-gradient(circle at 25% 85%, rgba(255, 255, 255, 0.02) 2px, transparent 2px);
+  background-size: 200px 200px, 150px 150px, 180px 180px, 120px 120px;
+  z-index: -1;
+  animation: bokehFloat 20s infinite linear;
+}
+
+@keyframes bokehFloat {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
+  padding: 30px 20px;
+  position: relative;
+}
+
+/* Header Section */
+.header {
+  text-align: center;
+  margin-bottom: 40px;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 24px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 28px;
   border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
 }
 
-.container::before {
+.header::before {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(167, 139, 250, 0.05) 0%, transparent 70%);
-  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+  transform: translateX(-100%);
+  animation: shimmer 3s infinite;
 }
 
-h2 {
-  text-align: center;
-  font-size: 2.2rem;
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.logo-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+}
+
+.logo-icon svg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.8rem;
   font-weight: 700;
-  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  background: linear-gradient(to right, #ffffff, var(--primary-light), var(--primary));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   margin-bottom: 10px;
+  letter-spacing: -0.5px;
 }
 
 .subtitle {
-  text-align: center;
+  font-size: 1.1rem;
   color: var(--text-secondary);
-  font-size: 1rem;
-  margin-bottom: 30px;
   font-weight: 400;
+  max-width: 600px;
+  margin: 0 auto 25px;
+  line-height: 1.6;
 }
 
+/* Input Section */
 .input-section {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 30px;
+  gap: 20px;
+  margin-bottom: 40px;
   justify-content: center;
   align-items: center;
+  padding: 30px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow);
+}
+
+.url-input-wrapper {
+  flex: 1;
+  min-width: 300px;
+  position: relative;
+}
+
+.url-input-wrapper::before {
+  content: '🌐';
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  z-index: 2;
 }
 
 .url-input {
-  flex: 1;
-  min-width: 280px;
-  padding: 18px 24px;
+  width: 100%;
+  padding: 20px 25px 20px 55px;
   font-size: 1rem;
-  background: var(--glass-bg);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  border-radius: 18px;
   color: var(--text-primary);
   backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow);
+  transition: all 0.4s ease;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+  font-weight: 500;
 }
 
 .url-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+  box-shadow: 
+    inset 0 2px 10px rgba(0, 0, 0, 0.2),
+    0 0 0 3px rgba(167, 139, 250, 0.15);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .url-input::placeholder {
-  color: #94a3b8;
+  color: var(--text-tertiary);
+  font-weight: 400;
 }
 
 .fetch-button {
-  padding: 18px 32px;
-  font-size: 1rem;
+  padding: 20px 40px;
+  font-size: 1.05rem;
   font-weight: 600;
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
   border: none;
-  border-radius: 16px;
+  border-radius: 18px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fetch-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
 }
 
 .fetch-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 15px 35px rgba(124, 58, 237, 0.4);
   background: linear-gradient(135deg, var(--primary-dark), var(--accent));
 }
 
+.fetch-button:hover::before {
+  left: 100%;
+}
+
 .fetch-button:active {
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(1.01);
 }
 
 .fetch-button:disabled {
@@ -150,70 +280,42 @@ h2 {
   box-shadow: none;
 }
 
-.status-container {
-  margin-bottom: 20px;
-  padding: 20px;
+.fetch-button:disabled:hover::before {
+  left: -100%;
+}
+
+/* Progress Section */
+.progress-section {
+  margin-bottom: 30px;
+  padding: 25px;
   background: var(--glass-bg);
-  border-radius: 16px;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 24px;
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(10px);
-  min-height: 60px;
-  display: flex;
-  align-items: center;
   box-shadow: var(--shadow);
+  transition: all 0.5s ease;
 }
 
-.status-content {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  font-weight: 500;
-}
-
-.spinner {
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-top: 3px solid var(--primary);
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.success-status {
-  color: var(--success);
-}
-
-.error-status {
-  color: var(--error);
-}
-
-.warning-status {
-  color: var(--warning);
-}
-
-.terminal-container {
-  background: var(--terminal-bg);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.progress-section.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  height: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
   overflow: hidden;
-  box-shadow: var(--shadow);
 }
 
-.terminal-header {
-  padding: 16px 24px;
-  background: rgba(0, 0, 0, 0.3);
+.progress-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
 }
 
-.terminal-title {
+.progress-title {
+  font-size: 1.3rem;
   font-weight: 600;
   color: var(--text-primary);
   display: flex;
@@ -221,63 +323,245 @@ h2 {
   gap: 10px;
 }
 
+.progress-percent {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: rgba(167, 139, 250, 0.1);
+  padding: 5px 15px;
+  border-radius: 12px;
+}
+
+.progress-bar-container {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark), var(--accent));
+  border-radius: 5px;
+  width: 0%;
+  transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: progressShine 2s infinite;
+}
+
+@keyframes progressShine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+
+.progress-step::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.progress-step:first-child::before {
+  left: 50%;
+  width: 50%;
+}
+
+.progress-step:last-child::before {
+  width: 50%;
+}
+
+.step-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  z-index: 2;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.step-icon.active {
+  background: var(--primary);
+  box-shadow: 0 0 15px rgba(167, 139, 250, 0.5);
+}
+
+.step-icon.completed {
+  background: var(--success);
+}
+
+.step-label {
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.step-label.active {
+  color: var(--text-primary);
+}
+
+/* Terminal Section */
+.terminal-section {
+  background: var(--terminal-bg);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  margin-top: 20px;
+}
+
+.terminal-header {
+  padding: 20px 30px;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.terminal-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.terminal-badge {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
 .terminal-controls {
   display: flex;
-  gap: 10px;
+  gap: 15px;
 }
 
 .control-btn {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.close-btn { background-color: #f87171; }
-.minimize-btn { background-color: #fbbf24; }
-.maximize-btn { background-color: #10b981; }
+.control-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.control-btn.copy:hover {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.control-btn.clear:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--error);
+  border-color: rgba(239, 68, 68, 0.3);
+}
 
 .terminal {
-  padding: 24px;
+  padding: 30px;
   font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--text-secondary);
-  max-height: 500px;
+  height: 500px;
   overflow-y: auto;
-  white-space: pre-wrap;
-  word-break: break-word;
+  background: 
+    linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)),
+    repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(255, 255, 255, 0.03) 24px, rgba(255, 255, 255, 0.03) 25px);
 }
 
 .terminal::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 .terminal::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
 }
 
 .terminal::-webkit-scrollbar-thumb {
   background: var(--primary);
-  border-radius: 4px;
+  border-radius: 5px;
+}
+
+.terminal::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }
 
 .terminal-line {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   display: flex;
   align-items: flex-start;
+  min-height: 22px;
 }
 
 .line-number {
-  color: #64748b;
+  color: var(--text-tertiary);
   min-width: 40px;
   text-align: right;
-  margin-right: 15px;
+  margin-right: 20px;
+  font-size: 0.9em;
+  user-select: none;
 }
 
 .line-content {
   flex: 1;
+  word-break: break-word;
 }
 
 .log-step {
@@ -321,192 +605,374 @@ h2 {
   color: #f87171;
 }
 
-.progress-container {
-  margin-top: 20px;
-  margin-bottom: 30px;
-}
-
-.progress-bar {
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 10px;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-  border-radius: 4px;
-  width: 0%;
-  transition: width 0.5s ease;
-}
-
-.progress-text {
+/* Notification */
+.notification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 18px 24px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow);
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 1000;
+  max-width: 400px;
+}
+
+.notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.notification.success {
+  border-left: 4px solid var(--success);
+}
+
+.notification.error {
+  border-left: 4px solid var(--error);
+}
+
+.notification-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notification.success .notification-icon {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success);
+}
+
+.notification.error .notification-icon {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--error);
+}
+
+.notification-content h4 {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.notification-content p {
   font-size: 0.9rem;
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
-    padding: 20px;
-    border-radius: 20px;
+    padding: 20px 15px;
   }
   
-  h2 {
-    font-size: 1.8rem;
+  h1 {
+    font-size: 2.2rem;
   }
   
   .input-section {
     flex-direction: column;
     align-items: stretch;
+    padding: 25px;
   }
   
-  .url-input, .fetch-button {
+  .url-input-wrapper {
+    min-width: 100%;
+  }
+  
+  .fetch-button {
     width: 100%;
+    padding: 18px;
+  }
+  
+  .terminal-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .terminal-controls {
+    width: 100%;
+    justify-content: flex-start;
   }
   
   .terminal {
-    max-height: 400px;
-    padding: 16px;
+    height: 400px;
+    padding: 20px;
     font-size: 13px;
   }
   
   .line-number {
     min-width: 30px;
-    margin-right: 10px;
+    margin-right: 15px;
+  }
+  
+  .progress-steps {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .progress-step {
+    flex: 0 0 calc(50% - 15px);
+  }
+  
+  .notification {
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    max-width: none;
   }
 }
 
 @media (max-width: 480px) {
-  body {
-    padding: 10px;
+  h1 {
+    font-size: 1.8rem;
   }
   
-  .container {
-    padding: 16px;
-    border-radius: 16px;
-  }
-  
-  h2 {
-    font-size: 1.6rem;
+  .header {
+    padding: 25px 20px;
   }
   
   .terminal {
-    max-height: 350px;
+    height: 350px;
     font-size: 12px;
+  }
+  
+  .progress-step {
+    flex: 0 0 100%;
+  }
+  
+  .progress-step::before {
+    display: none;
   }
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in {
-  animation: fadeIn 0.5s ease forwards;
+  animation: fadeIn 0.8s ease forwards;
 }
 
-/* Utility Classes */
-.hidden {
-  display: none;
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(167, 139, 250, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(167, 139, 250, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(167, 139, 250, 0); }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
 }
 </style>
 </head>
 <body>
-<div class="container fade-in">
-  <h2>Scraper + AI JSON Terminal</h2>
-  <p class="subtitle">Fetch and analyze web content with AI-powered extraction</p>
-  
-  <div class="input-section">
-    <input type="text" id="url" class="url-input" placeholder="Enter target URL (e.g., https://example.com)">
+<div class="container">
+  <!-- Header Section -->
+  <header class="header fade-in">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+        </svg>
+      </div>
+    </div>
+    <h1>NeoGlass Scraper</h1>
+    <p class="subtitle">AI-powered web scraping and analysis with modern glassmorphism UI. Extract structured JSON data from any website.</p>
+  </header>
+
+  <!-- Input Section -->
+  <section class="input-section fade-in">
+    <div class="url-input-wrapper">
+      <input type="text" id="url" class="url-input" placeholder="https://example.com">
+    </div>
     <button id="fetchBtn" class="fetch-button" onclick="startScrape()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C14.4853 3 16.7353 4.00736 18.364 5.63604M19 12H15M15 12L18 15M15 12L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       Fetch & Analyze
     </button>
-  </div>
-  
-  <div class="progress-container hidden" id="progressContainer">
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
+  </section>
+
+  <!-- Progress Section -->
+  <section class="progress-section hidden" id="progressSection">
+    <div class="progress-header">
+      <div class="progress-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M21 12C21 7.02944 16.9706 3 12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 4"/>
+        </svg>
+        <span>Scraping Progress</span>
+      </div>
+      <div class="progress-percent" id="progressPercent">0%</div>
     </div>
-    <div class="progress-text">
-      <span id="progressText">0%</span>
-      <span id="progressStep">Initializing...</span>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
     </div>
-  </div>
-  
-  <div class="status-container">
-    <div class="status-content" id="status">
-      <span>Ready to scrape. Enter a URL above and click "Fetch & Analyze".</span>
+    <div class="progress-steps">
+      <div class="progress-step">
+        <div class="step-icon" id="step1Icon">1</div>
+        <div class="step-label" id="step1Label">Fetch HTML</div>
+      </div>
+      <div class="progress-step">
+        <div class="step-icon" id="step2Icon">2</div>
+        <div class="step-label" id="step2Label">Process Content</div>
+      </div>
+      <div class="progress-step">
+        <div class="step-icon" id="step3Icon">3</div>
+        <div class="step-label" id="step3Label">AI Analysis</div>
+      </div>
+      <div class="progress-step">
+        <div class="step-icon" id="step4Icon">4</div>
+        <div class="step-label" id="step4Label">Generate JSON</div>
+      </div>
     </div>
-  </div>
-  
-  <div class="terminal-container">
+  </section>
+
+  <!-- Terminal Section -->
+  <section class="terminal-section fade-in">
     <div class="terminal-header">
       <div class="terminal-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M4 17L10 11L4 5M12 19H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <span>Terminal Output</span>
+        <span class="terminal-badge">AI Analysis</span>
       </div>
       <div class="terminal-controls">
-        <button class="control-btn minimize-btn"></button>
-        <button class="control-btn maximize-btn"></button>
-        <button class="control-btn close-btn" onclick="clearTerminal()"></button>
+        <button class="control-btn copy" onclick="copyTerminalContent()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M5 15H4C2.89543 15 2 14.1046 2 13V4C2 2.89543 2.89543 2 4 2H13C14.1046 2 15 2.89543 15 4V5" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Copy
+        </button>
+        <button class="control-btn clear" onclick="clearTerminal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Clear
+        </button>
       </div>
     </div>
     <pre class="terminal" id="terminal">
 <span class="terminal-line">
   <span class="line-number">1</span>
-  <span class="line-content">┌─────────────────────────────────────────────┐</span>
+  <span class="line-content">╔═══════════════════════════════════════════════════════════╗</span>
 </span>
 <span class="terminal-line">
   <span class="line-number">2</span>
-  <span class="line-content">│  Web Scraper + AI Analysis Terminal        │</span>
+  <span class="line-content">║                                                           ║</span>
 </span>
 <span class="terminal-line">
   <span class="line-number">3</span>
-  <span class="line-content">│  Version 2.1.0 - Glassmorphism Edition     │</span>
+  <span class="line-content">║  <span class="log-info">NEOGLASS SCRAPER TERMINAL</span>                              ║</span>
 </span>
 <span class="terminal-line">
   <span class="line-number">4</span>
-  <span class="line-content">└─────────────────────────────────────────────┘</span>
+  <span class="line-content">║  Version 3.0.0 | Glassmorphism Edition                    ║</span>
 </span>
 <span class="terminal-line">
   <span class="line-number">5</span>
-  <span class="line-content"></span>
+  <span class="line-content">║                                                           ║</span>
 </span>
 <span class="terminal-line">
   <span class="line-number">6</span>
-  <span class="line-content"><span class="log-info">[INFO]</span> Terminal ready. Enter a URL to begin scraping.</span>
+  <span class="line-content">╚═══════════════════════════════════════════════════════════╝</span>
 </span>
 <span class="terminal-line">
   <span class="line-number">7</span>
-  <span class="line-content"><span class="log-info">[INFO]</span> The scraper will fetch HTML content and analyze it with AI.</span>
+  <span class="line-content"></span>
 </span>
 <span class="terminal-line">
   <span class="line-number">8</span>
-  <span class="line-content"><span class="log-info">[INFO]</span> Results will be formatted as structured JSON data.</span>
+  <span class="line-content"><span class="log-info">[SYSTEM]</span> Terminal initialized successfully.</span>
+</span>
+<span class="terminal-line">
+  <span class="line-number">9</span>
+  <span class="line-content"><span class="log-info">[SYSTEM]</span> AI analysis engine ready.</span>
+</span>
+<span class="terminal-line">
+  <span class="line-number">10</span>
+  <span class="line-content"><span class="log-info">[SYSTEM]</span> Enter a URL above to begin scraping and analysis.</span>
+</span>
+<span class="terminal-line">
+  <span class="line-number">11</span>
+  <span class="line-content"></span>
+</span>
+<span class="terminal-line">
+  <span class="line-number">12</span>
+  <span class="line-content"><span class="log-step">[READY]</span> Awaiting user input...</span>
 </span>
     </pre>
+  </section>
+</div>
+
+<!-- Notification -->
+<div class="notification" id="notification">
+  <div class="notification-icon">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="notification-content">
+    <h4 id="notificationTitle">Notification</h4>
+    <p id="notificationMessage">This is a notification message.</p>
   </div>
 </div>
 
 <script>
-let lineCount = 8;
+let lineCount = 12;
+let currentJsonData = null;
 
+// Notification system
+function showNotification(title, message, type = "success") {
+  const notification = document.getElementById('notification');
+  const titleEl = document.getElementById('notificationTitle');
+  const messageEl = document.getElementById('notificationMessage');
+  
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  
+  notification.className = `notification ${type}`;
+  notification.classList.add('show');
+  
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 3000);
+}
+
+// Terminal functions
 function clearTerminal() {
   const terminal = document.getElementById('terminal');
   lineCount = 0;
   terminal.innerHTML = '';
   addTerminalLine("Terminal cleared.", "info");
+  showNotification("Terminal Cleared", "All content has been removed from the terminal.", "success");
+}
+
+function copyTerminalContent() {
+  const terminal = document.getElementById('terminal');
+  const textToCopy = terminal.textContent;
+  
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    showNotification("Copied to Clipboard", "Terminal content has been copied successfully.", "success");
+  }).catch(err => {
+    showNotification("Copy Failed", "Unable to copy terminal content.", "error");
+    console.error('Copy failed:', err);
+  });
 }
 
 function addTerminalLine(message, type = "info") {
@@ -524,11 +990,13 @@ function addTerminalLine(message, type = "info") {
   lineContentElement.className = 'line-content';
   
   let typePrefix = '';
-  if (type === "success") typePrefix = '<span class="log-success">[SUCCESS]</span> ';
-  else if (type === "error") typePrefix = '<span class="log-error">[ERROR]</span> ';
-  else if (type === "warning") typePrefix = '<span class="log-warning">[WARNING]</span> ';
-  else if (type === "step") typePrefix = '<span class="log-step">[STEP]</span> ';
-  else typePrefix = '<span class="log-info">[INFO]</span> ';
+  switch(type) {
+    case "success": typePrefix = '<span class="log-success">[SUCCESS]</span> '; break;
+    case "error": typePrefix = '<span class="log-error">[ERROR]</span> '; break;
+    case "warning": typePrefix = '<span class="log-warning">[WARNING]</span> '; break;
+    case "step": typePrefix = '<span class="log-step">[STEP]</span> '; break;
+    default: typePrefix = '<span class="log-info">[INFO]</span> ';
+  }
   
   lineContentElement.innerHTML = typePrefix + message;
   
@@ -540,46 +1008,49 @@ function addTerminalLine(message, type = "info") {
   terminal.scrollTop = terminal.scrollHeight;
 }
 
-function updateProgress(percent, step) {
-  const progressFill = document.getElementById('progressFill');
-  const progressText = document.getElementById('progressText');
-  const progressStep = document.getElementById('progressStep');
-  const progressContainer = document.getElementById('progressContainer');
+// Progress functions
+function updateProgress(percent, step, activeStep) {
+  const progressSection = document.getElementById('progressSection');
+  const progressBar = document.getElementById('progressBar');
+  const progressPercent = document.getElementById('progressPercent');
   
-  progressContainer.classList.remove('hidden');
-  progressFill.style.width = percent + '%';
-  progressText.textContent = percent + '%';
-  progressStep.textContent = step;
-}
-
-function updateStatus(message, type = "info") {
-  const statusEl = document.getElementById('status');
+  // Show progress section
+  progressSection.classList.remove('hidden');
   
-  let statusHtml = '';
-  if (type === "loading") {
-    statusHtml = `<div class="spinner"></div><span>${message}</span>`;
-  } else if (type === "success") {
-    statusHtml = `<span class="success-status">✅ ${message}</span>`;
-  } else if (type === "error") {
-    statusHtml = `<span class="error-status">❌ ${message}</span>`;
-  } else {
-    statusHtml = `<span>${message}</span>`;
+  // Update progress bar
+  progressBar.style.width = percent + '%';
+  progressPercent.textContent = percent + '%';
+  
+  // Update steps
+  for (let i = 1; i <= 4; i++) {
+    const stepIcon = document.getElementById(`step${i}Icon`);
+    const stepLabel = document.getElementById(`step${i}Label`);
+    
+    if (i < activeStep) {
+      stepIcon.className = 'step-icon completed';
+      stepIcon.innerHTML = '✓';
+      stepLabel.className = 'step-label completed';
+    } else if (i === activeStep) {
+      stepIcon.className = 'step-icon active';
+      stepLabel.className = 'step-label active';
+    } else {
+      stepIcon.className = 'step-icon';
+      stepLabel.className = 'step-label';
+    }
   }
-  
-  statusEl.innerHTML = statusHtml;
 }
 
+// JSON formatting
 function formatJsonForTerminal(jsonString) {
-  // Format JSON with syntax highlighting for terminal
   try {
-    const jsonObj = JSON.parse(jsonString);
+    const jsonObj = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
     const formatted = JSON.stringify(jsonObj, null, 2);
     
     // Add syntax highlighting
     return formatted
       .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
       .replace(/: "([^"]+)"/g, ': <span class="json-string">"$1"</span>')
-      .replace(/: (\d+)/g, ': <span class="json-number">$1</span>')
+      .replace(/: (\d+\.?\d*)/g, ': <span class="json-number">$1</span>')
       .replace(/: (true|false)/g, ': <span class="json-boolean">$1</span>')
       .replace(/: null/g, ': <span class="json-null">null</span>');
   } catch (e) {
@@ -587,113 +1058,132 @@ function formatJsonForTerminal(jsonString) {
   }
 }
 
+// Main scraping function
 async function startScrape() {
   const url = document.getElementById('url').value.trim();
   const fetchBtn = document.getElementById('fetchBtn');
   
   if (!url) {
     addTerminalLine("Please enter a valid URL first.", "error");
-    updateStatus("Please enter a URL", "error");
+    showNotification("Input Required", "Please enter a URL to scrape.", "error");
     return;
   }
   
   // Validate URL format
   if (!url.startsWith('http://') && !url.startsWith('https://')) {
     addTerminalLine("URL must start with http:// or https://", "error");
-    updateStatus("Invalid URL format", "error");
+    showNotification("Invalid URL", "URL must start with http:// or https://", "error");
     return;
   }
   
   // Disable button during process
   fetchBtn.disabled = true;
   fetchBtn.innerHTML = `
-    <div class="spinner" style="width: 20px; height: 20px; border-width: 2px;"></div>
+    <div class="spinner" style="width: 22px; height: 22px; border-width: 2px;"></div>
     Processing...
   `;
   
-  // Clear previous results
-  updateProgress(0, "Initializing...");
-  updateStatus("Initializing scraper...", "loading");
+  // Clear previous results and show progress
+  updateProgress(0, "Initializing...", 1);
   addTerminalLine(`Starting scrape process for: ${url}`, "step");
+  showNotification("Process Started", `Scraping ${url}`, "success");
   
   try {
-    // Simulate the scraping process (in a real app, this would call your backend APIs)
+    // Step 1: Fetch HTML
     addTerminalLine("[1/4] Fetching HTML content from URL...", "step");
-    updateProgress(25, "Fetching HTML content");
-    updateStatus("Fetching HTML content...", "loading");
+    updateProgress(25, "Fetching HTML...", 1);
     
     // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1800));
+    
+    addTerminalLine("✓ HTML content fetched successfully", "success");
+    
+    // Step 2: Process HTML
+    addTerminalLine("[2/4] Processing HTML content...", "step");
+    updateProgress(50, "Processing HTML...", 2);
+    
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    addTerminalLine("✓ HTML content fetched successfully (simulated)", "success");
-    addTerminalLine("[2/4] Processing HTML content...", "step");
-    updateProgress(50, "Processing HTML");
-    updateStatus("Processing HTML content...", "loading");
+    addTerminalLine("✓ HTML processed and structured", "success");
     
-    // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 1200));
+    // Step 3: AI Analysis
+    addTerminalLine("[3/4] Analyzing content with AI engine...", "step");
+    updateProgress(75, "AI Analysis...", 3);
     
-    addTerminalLine("✓ HTML processed successfully", "success");
-    addTerminalLine("[3/4] Analyzing content with AI...", "step");
-    updateProgress(75, "AI Analysis in progress");
-    updateStatus("Analyzing content with AI...", "loading");
+    await new Promise(resolve => setTimeout(resolve, 2200));
     
-    // Simulate AI analysis delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    addTerminalLine("✓ AI analysis completed successfully", "success");
     
-    addTerminalLine("✓ AI analysis completed", "success");
+    // Step 4: Generate JSON
     addTerminalLine("[4/4] Generating structured JSON output...", "step");
-    updateProgress(95, "Generating JSON output");
-    updateStatus("Generating JSON output...", "loading");
+    updateProgress(95, "Generating JSON...", 4);
     
-    // Simulate JSON generation
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    updateProgress(100, "Process completed");
-    updateStatus("Scraping and analysis completed successfully!", "success");
+    updateProgress(100, "Process completed", 4);
     addTerminalLine("✓ Process completed successfully", "success");
     
-    // Display sample JSON output
+    // Generate sample JSON data
     const sampleJson = {
-      "url": url,
-      "timestamp": new Date().toISOString(),
-      "status": "success",
       "metadata": {
-        "title": "Sample Web Page",
-        "description": "This is a sample description extracted from the webpage.",
+        "url": url,
+        "timestamp": new Date().toISOString(),
+        "status": "success",
+        "processingTime": "4.5 seconds",
+        "aiModel": "GPT-4 Transformer"
+      },
+      "pageInfo": {
+        "title": "Example Domain",
+        "description": "This domain is for use in illustrative examples in documents.",
         "language": "en",
-        "keywords": ["sample", "web", "page", "extraction"]
+        "keywords": ["example", "domain", "illustrative"],
+        "charset": "UTF-8",
+        "viewport": "width=device-width, initial-scale=1.0"
       },
       "content": {
-        "mainHeading": "Welcome to the Sample Page",
+        "headings": [
+          {"level": 1, "text": "Example Domain", "count": 1},
+          {"level": 2, "text": "For illustrative examples", "count": 1}
+        ],
         "paragraphs": [
-          "This is the first paragraph extracted from the webpage.",
-          "This is the second paragraph with more detailed content.",
-          "The AI has successfully structured this content for analysis."
+          "This domain is for use in illustrative examples in documents.",
+          "You may use this domain in literature without prior coordination or asking for permission."
         ],
         "links": [
-          {"text": "Home", "url": "/"},
-          {"text": "About", "url": "/about"},
-          {"text": "Contact", "url": "/contact"}
+          {"text": "More information...", "url": "https://www.iana.org/domains/example"}
+        ],
+        "images": [
+          {"src": "", "alt": "", "count": 0}
         ]
       },
-      "analysis": {
-        "sentiment": "positive",
-        "topics": ["web development", "data extraction", "AI analysis"],
-        "summary": "This webpage contains sample content for demonstration of the scraper + AI analysis system.",
-        "wordCount": 127,
-        "readabilityScore": 8.2
+      "aiAnalysis": {
+        "sentiment": "neutral",
+        "topics": ["web development", "examples", "documentation"],
+        "summary": "This is a standard example webpage used for documentation and illustrative purposes.",
+        "wordCount": 45,
+        "readabilityScore": 9.8,
+        "estimatedReadingTime": "20 seconds"
+      },
+      "seoData": {
+        "titleLength": 15,
+        "descriptionLength": 85,
+        "hasH1": true,
+        "hasMetaDescription": true,
+        "hasCanonical": false,
+        "hasRobotsTxt": false
       }
     };
     
+    currentJsonData = sampleJson;
     const jsonString = JSON.stringify(sampleJson, null, 2);
     const formattedJson = formatJsonForTerminal(jsonString);
     
+    // Display JSON in terminal
     addTerminalLine("", "info");
-    addTerminalLine("========== ANALYSIS RESULTS ==========", "step");
+    addTerminalLine("══════════════════ ANALYSIS RESULTS ══════════════════", "step");
     addTerminalLine("", "info");
     
-    // Add JSON line by line for better formatting
+    // Split JSON into lines and add to terminal
     const jsonLines = formattedJson.split('\n');
     jsonLines.forEach(line => {
       const lineElement = document.createElement('span');
@@ -713,19 +1203,21 @@ async function startScrape() {
     });
     
     addTerminalLine("", "info");
-    addTerminalLine("======================================", "step");
-    addTerminalLine("Analysis complete. JSON summary ready for use.", "success");
+    addTerminalLine("══════════════════════════════════════════════════════", "step");
+    addTerminalLine("Analysis complete. JSON data is ready for use.", "success");
+    
+    showNotification("Process Complete", "Web scraping and AI analysis completed successfully!", "success");
     
   } catch (err) {
-    updateProgress(0, "Process failed");
-    updateStatus("Error during scraping process", "error");
+    updateProgress(0, "Process failed", 1);
     addTerminalLine(`Error: ${err.message}`, "error");
-    addTerminalLine("Process terminated due to error.", "error");
+    addTerminalLine("Process terminated due to an error.", "error");
+    showNotification("Process Failed", "An error occurred during processing.", "error");
   } finally {
     // Re-enable button
     fetchBtn.disabled = false;
     fetchBtn.innerHTML = `
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C14.4853 3 16.7353 4.00736 18.364 5.63604M19 12H15M15 12L18 15M15 12L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       Fetch & Analyze
@@ -733,7 +1225,7 @@ async function startScrape() {
   }
 }
 
-// Add some interactivity
+// Initialize
 document.addEventListener('DOMContentLoaded', function() {
   const urlInput = document.getElementById('url');
   const fetchBtn = document.getElementById('fetchBtn');
@@ -745,11 +1237,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Add sample URL on click for demo purposes
+  // Add sample URL on click for demo
   urlInput.addEventListener('click', function() {
     if (!this.value) {
       this.value = 'https://example.com';
     }
+  });
+  
+  // Add focus effect
+  urlInput.addEventListener('focus', function() {
+    this.parentElement.style.transform = 'translateY(-2px)';
+  });
+  
+  urlInput.addEventListener('blur', function() {
+    this.parentElement.style.transform = 'translateY(0)';
   });
 });
 </script>
