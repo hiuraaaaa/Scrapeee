@@ -2,681 +2,100 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Web Scraper + AI Terminal Progress</title>
+<title>Scraper + AI JSON</title>
 <style>
-  :root {
-    --primary: #4f46e5;
-    --primary-dark: #4338ca;
-    --bg-dark: #0f172a;
-    --card-bg: #1e293b;
-    --card-border: #334155;
-    --text-primary: #f8fafc;
-    --text-secondary: #cbd5e1;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --error: #ef4444;
-    --info: #3b82f6;
-    --spinner: #8b5cf6;
-    --input-bg: #0f172a;
-    --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg-dark);
-    color: var(--text-primary);
-    line-height: 1.6;
-    min-height: 100vh;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .container {
-    width: 100%;
-    max-width: 1000px;
-    background: var(--card-bg);
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--card-border);
-    overflow: hidden;
-  }
-
-  .header {
-    padding: 24px 32px;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    border-bottom: 1px solid var(--card-border);
-  }
-
-  .header h1 {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    letter-spacing: -0.5px;
-  }
-
-  .header p {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 15px;
-    font-weight: 400;
-  }
-
-  .content {
-    padding: 32px;
-  }
-
-  .input-section {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 32px;
-  }
-
-  .url-input {
-    flex: 1;
-    padding: 16px 20px;
-    background: var(--input-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    color: var(--text-primary);
-    font-size: 15px;
-    font-weight: 500;
-    transition: var(--transition);
-    outline: none;
-  }
-
-  .url-input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-  }
-
-  .url-input::placeholder {
-    color: #64748b;
-  }
-
-  .btn-primary {
-    padding: 16px 28px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    white-space: nowrap;
-  }
-
-  .btn-primary:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
-  }
-
-  .btn-primary:active {
-    transform: translateY(0);
-  }
-
-  .btn-primary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
-  }
-
-  .terminal-container {
-    background: var(--input-bg);
-    border-radius: 10px;
-    border: 1px solid var(--card-border);
-    overflow: hidden;
-  }
-
-  .terminal-header {
-    padding: 16px 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid var(--card-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .terminal-title {
-    font-weight: 600;
-    font-size: 15px;
-    color: var(--text-secondary);
-  }
-
-  .terminal-controls {
-    display: flex;
-    gap: 8px;
-  }
-
-  .control-btn {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #f87171;
-    cursor: pointer;
-  }
-
-  .control-btn:nth-child(2) {
-    background: #fbbf24;
-  }
-
-  .control-btn:nth-child(3) {
-    background: #10b981;
-  }
-
-  .terminal-body {
-    padding: 20px;
-    max-height: 400px;
-    overflow-y: auto;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    font-size: 13.5px;
-  }
-
-  .log-entry {
-    margin-bottom: 12px;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    animation: fadeIn 0.3s ease-out;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .log-timestamp {
-    color: #64748b;
-    font-size: 12px;
-    min-width: 70px;
-    margin-top: 2px;
-  }
-
-  .log-content {
-    flex: 1;
-    line-height: 1.5;
-    word-break: break-word;
-  }
-
-  .log-icon {
-    width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 2px;
-  }
-
-  .spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(139, 92, 246, 0.2);
-    border-top: 2px solid var(--spinner);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  .check {
-    color: var(--success);
-  }
-
-  .error {
-    color: var(--error);
-  }
-
-  .warning {
-    color: var(--warning);
-  }
-
-  .info {
-    color: var(--info);
-  }
-
-  .progress-container {
-    margin-top: 24px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    padding: 16px;
-  }
-
-  .progress-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  .progress-title {
-    font-weight: 600;
-    font-size: 14px;
-  }
-
-  .progress-percentage {
-    font-weight: 700;
-    color: var(--primary);
-  }
-
-  .progress-bar {
-    height: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 8px;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--spinner));
-    border-radius: 3px;
-    width: 0%;
-    transition: width 0.5s ease;
-  }
-
-  .progress-steps {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 8px;
-  }
-
-  .progress-step {
-    font-size: 12px;
-    color: var(--text-secondary);
-    position: relative;
-    padding-top: 20px;
-  }
-
-  .progress-step::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .progress-step.active::before {
-    background: var(--primary);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-  }
-
-  .progress-step.completed::before {
-    background: var(--success);
-  }
-
-  .summary-section {
-    margin-top: 32px;
-    background: var(--input-bg);
-    border-radius: 10px;
-    border: 1px solid var(--card-border);
-    padding: 20px;
-    display: none;
-  }
-
-  .summary-section.visible {
-    display: block;
-    animation: fadeIn 0.5s ease;
-  }
-
-  .summary-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--card-border);
-  }
-
-  .summary-title {
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--text-primary);
-  }
-
-  .summary-content {
-    line-height: 1.6;
-    color: var(--text-secondary);
-  }
-
-  @media (max-width: 768px) {
-    .container {
-      margin: 10px;
-      border-radius: 12px;
-    }
-    
-    .header, .content {
-      padding: 20px;
-    }
-    
-    .input-section {
-      flex-direction: column;
-    }
-    
-    .btn-primary {
-      width: 100%;
-    }
-    
-    .terminal-body {
-      max-height: 300px;
-    }
-    
-    .progress-steps {
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    
-    .progress-step {
-      flex: 1;
-      min-width: 100px;
-    }
-  }
-
-  /* Scrollbar styling */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-dark);
-  }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f5f7fa; margin:0; padding:0;}
+.container { max-width:900px; margin:40px auto; padding:20px; background:#fff; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.1);}
+h2{text-align:center;color:#333;}
+input[type=text]{width:70%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-right:10px;font-size:16px;}
+button{padding:10px 20px;font-size:16px;border-radius:8px;border:none;background:#4f46e5;color:#fff;cursor:pointer;transition:0.3s;}
+button:hover{background:#4338ca;}
+pre{white-space:pre-wrap;border:1px solid #ddd;padding:15px;border-radius:8px;background:#f9fafb;max-height:500px;overflow-y:auto;font-size:14px;}
+.spinner{border:4px solid #f3f3f3;border-top:4px solid #4f46e5;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite;margin-right:10px;}
+@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+.status{margin-top:15px;font-weight:bold;color:#555;display:flex;align-items:center;}
 </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="header">
-    <h1>Web Scraper + AI Analyzer</h1>
-    <p>Extract and analyze web content with AI-powered summarization</p>
-  </div>
-  
-  <div class="content">
-    <div class="input-section">
-      <input type="text" id="url" class="url-input" placeholder="Enter target URL (e.g., https://example.com)">
-      <button id="startBtn" class="btn-primary" onclick="runScraper()">
-        <span>Start Analysis</span>
-      </button>
-    </div>
-    
-    <div class="progress-container">
-      <div class="progress-header">
-        <div class="progress-title">Analysis Progress</div>
-        <div class="progress-percentage" id="progressPercentage">0%</div>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-      <div class="progress-steps">
-        <div class="progress-step" id="step1">Initialize</div>
-        <div class="progress-step" id="step2">Fetch HTML</div>
-        <div class="progress-step" id="step3">AI Analysis</div>
-        <div class="progress-step" id="step4">Complete</div>
-      </div>
-    </div>
-    
-    <div class="terminal-container">
-      <div class="terminal-header">
-        <div class="terminal-title">Terminal Output</div>
-        <div class="terminal-controls">
-          <div class="control-btn"></div>
-          <div class="control-btn"></div>
-          <div class="control-btn"></div>
-        </div>
-      </div>
-      <div class="terminal-body" id="log"></div>
-    </div>
-    
-    <div class="summary-section" id="summarySection">
-      <div class="summary-header">
-        <div class="summary-title">AI Summary</div>
-        <div class="btn-primary" style="padding: 8px 16px; font-size: 13px;" onclick="copySummary()">Copy Summary</div>
-      </div>
-      <div class="summary-content" id="summaryContent"></div>
-    </div>
-  </div>
+<h2>Scraper + AI JSON Terminal</h2>
+<div style="text-align:center; margin-bottom:15px;">
+<input type="text" id="url" placeholder="Masukkan URL target">
+<button onclick="startScrape()">Fetch & Analyze</button>
 </div>
 
+<div class="status" id="status"></div>
+<pre id="terminal">Terminal output akan muncul di sini...</pre>
+
 <script>
-// Get DOM elements
-const urlInput = document.getElementById('url');
-const startBtn = document.getElementById('startBtn');
-const log = document.getElementById('log');
-const summarySection = document.getElementById('summarySection');
-const summaryContent = document.getElementById('summaryContent');
-const progressFill = document.getElementById('progressFill');
-const progressPercentage = document.getElementById('progressPercentage');
-const step1 = document.getElementById('step1');
-const step2 = document.getElementById('step2');
-const step3 = document.getElementById('step3');
-const step4 = document.getElementById('step4');
+async function startScrape() {
+  const url = document.getElementById('url').value;
+  const statusEl = document.getElementById('status');
+  const term = document.getElementById('terminal');
+  term.textContent = '';
+  statusEl.innerHTML = `<div class="spinner"></div>Initializing scraper...`;
 
-// Set default URL for testing
-urlInput.value = 'https://en.wikipedia.org/wiki/Artificial_intelligence';
+  if (!url) return alert('Masukkan URL dulu!');
 
-// Helper function to get current time
-function getCurrentTime() {
-  const now = new Date();
-  return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-}
-
-// Append log to terminal
-function appendLog(text, type = 'info') {
-  const timestamp = getCurrentTime();
-  const logEntry = document.createElement('div');
-  logEntry.className = 'log-entry';
-  
-  let icon = '';
-  if (type === 'spinner') {
-    icon = '<div class="spinner"></div>';
-  } else if (type === 'check') {
-    icon = '<div class="log-icon check">✓</div>';
-  } else if (type === 'error') {
-    icon = '<div class="log-icon error">✗</div>';
-  } else if (type === 'warning') {
-    icon = '<div class="log-icon warning">!</div>';
-  } else {
-    icon = '<div class="log-icon info">i</div>';
-  }
-  
-  logEntry.innerHTML = `
-    <div class="log-timestamp">${timestamp}</div>
-    ${icon}
-    <div class="log-content">${text}</div>
-  `;
-  
-  log.appendChild(logEntry);
-  log.scrollTop = log.scrollHeight;
-}
-
-// Update progress bar and steps
-function updateProgress(percentage, activeStep) {
-  // Update progress bar
-  progressFill.style.width = `${percentage}%`;
-  progressPercentage.textContent = `${percentage}%`;
-  
-  // Reset all steps
-  [step1, step2, step3, step4].forEach(step => {
-    step.classList.remove('active', 'completed');
-  });
-  
-  // Mark completed and active steps
-  if (percentage >= 0) step1.classList.add('completed');
-  if (percentage >= 33) step2.classList.add('completed');
-  if (percentage >= 66) step3.classList.add('completed');
-  if (percentage >= 100) step4.classList.add('completed');
-  
-  // Set active step
-  if (activeStep === 1) step1.classList.add('active');
-  if (activeStep === 2) step2.classList.add('active');
-  if (activeStep === 3) step3.classList.add('active');
-  if (activeStep === 4) step4.classList.add('active');
-}
-
-// Mock API functions for demo
-async function mockFetchHTML(url) {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1500));
-  
-  // Return mock HTML data
-  return `<html>
-  <head><title>Test Page - AI</title></head>
-  <body>
-    <h1>Artificial Intelligence</h1>
-    <p>Artificial intelligence (AI) is intelligence demonstrated by machines, as opposed to natural intelligence displayed by animals including humans.</p>
-    <p>Leading AI textbooks define the field as the study of "intelligent agents": any system that perceives its environment and takes actions that maximize its chance of achieving its goals.</p>
-    <p>AI applications include advanced web search engines, recommendation systems, understanding human speech, self-driving cars, automated decision-making and competing at the highest level in strategic game systems.</p>
-  </body>
-</html>`;
-}
-
-async function mockAnalyzeAI(html) {
-  // Simulate AI processing delay
-  await new Promise(resolve => setTimeout(resolve, 2500));
-  
-  // Return mock analysis
-  return `This webpage discusses Artificial Intelligence (AI), defined as intelligence demonstrated by machines as opposed to natural intelligence in humans and animals. The content explains that AI involves creating systems (intelligent agents) that can perceive their environment and take actions to maximize their chances of achieving goals.
-
-Key applications mentioned include:
-- Advanced web search engines
-- Recommendation systems
-- Speech recognition and understanding
-- Self-driving vehicles
-- Automated decision-making systems
-- Strategic game systems (like chess or Go AI)
-
-The text presents AI as a field focused on creating autonomous systems that can adapt and respond to their environment to accomplish specific objectives, highlighting its practical applications in modern technology.`;
-}
-
-// Copy summary to clipboard
-function copySummary() {
-  const textToCopy = summaryContent.textContent;
-  navigator.clipboard.writeText(textToCopy)
-    .then(() => {
-      const originalText = startBtn.innerHTML;
-      startBtn.innerHTML = '<span>Copied!</span>';
-      setTimeout(() => {
-        startBtn.innerHTML = originalText;
-      }, 2000);
-    })
-    .catch(err => {
-      console.error('Failed to copy: ', err);
-      appendLog('Failed to copy summary to clipboard', 'error');
-    });
-}
-
-// Main scraper function
-async function runScraper() {
-  const url = urlInput.value.trim();
-  if (!url) {
-    alert("Please enter a URL first");
-    return;
-  }
-  
-  // Reset UI
-  log.innerHTML = '';
-  summarySection.classList.remove('visible');
-  startBtn.disabled = true;
-  startBtn.innerHTML = '<div class="spinner"></div><span>Processing...</span>';
-  
-  // Initialize progress
-  updateProgress(0, 1);
-  
   try {
-    // Step 1: Fetch HTML
-    appendLog(`Initializing scraper for: ${url}`, 'info');
-    updateProgress(10, 1);
-    
-    appendLog('[1/4] Fetching HTML content...', 'spinner');
-    await new Promise(resolve => setTimeout(resolve, 800));
-    updateProgress(25, 2);
-    
-    const html = await mockFetchHTML(url);
-    appendLog('[1/4] HTML fetched successfully', 'check');
-    updateProgress(40, 2);
-    
-    // Step 2: AI Analysis
-    appendLog('[2/4] Processing HTML content...', 'spinner');
-    await new Promise(resolve => setTimeout(resolve, 600));
-    updateProgress(55, 3);
-    
-    appendLog('[3/4] Analyzing content with AI...', 'spinner');
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    updateProgress(70, 3);
-    
-    // Simulate chunked processing
-    appendLog('[3/4] Extracting key information...', 'info');
-    await new Promise(resolve => setTimeout(resolve, 500));
-    updateProgress(80, 3);
-    
-    appendLog('[3/4] Generating summary...', 'info');
-    await new Promise(resolve => setTimeout(resolve, 700));
-    updateProgress(90, 3);
-    
-    const summary = await mockAnalyzeAI(html);
-    
-    appendLog('[3/4] AI analysis complete', 'check');
-    updateProgress(95, 4);
-    
-    
-    appendLog('[4/4] Process completed successfully', 'check');
-    updateProgress(100, 4);
-    
-    
-    summaryContent.textContent = summary;
-    summarySection.classList.add('visible');
-    
-    appendLog(`Analysis complete. Summary available above.`, 'info');
-    
-  } catch (error) {
-    appendLog(`Error: ${error.message}`, 'error');
-    updateProgress(0, 1);
-  } finally {
-    startBtn.disabled = false;
-    startBtn.innerHTML = '<span>Start Analysis</span>';
+    term.textContent += `[1/4] Fetching HTML content...\n`;
+    statusEl.innerHTML = `<div class="spinner"></div>Fetching HTML...`;
+
+    const fetchRes = await fetch('/api/fetch', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({url})
+    });
+    const fetchData = await fetchRes.json();
+    if (!fetchData.html) throw new Error("Failed to fetch HTML");
+    term.textContent += `✓ [1/4] HTML fetched successfully\n`;
+
+    const html = fetchData.html;
+    term.textContent += `[2/4] Processing HTML content...\n`;
+    statusEl.innerHTML = `<div class="spinner"></div>Processing HTML...`;
+
+    const analyzeRes = await fetch('/api/analyze', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({html})
+    });
+
+    const reader = analyzeRes.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let done = false;
+    let fullText = '';
+    let chunkCount = 0;
+
+    term.textContent += `[3/4] Analyzing content with AI...\n`;
+    statusEl.innerHTML = `<div class="spinner"></div>Analyzing AI...`;
+
+    // baca stream progres dari backend (opsional jika backend kirim partial)
+    while(!done){
+      const {value, done:doneReading} = await reader.read();
+      done = doneReading;
+      if(value){
+        const text = decoder.decode(value);
+        fullText += text;
+        // update terminal live
+        const newLines = text.split('\n').filter(l=>l.trim());
+        newLines.forEach(line=>{
+          if(line.includes('Chunk')) chunkCount++;
+          term.textContent += line+'\n';
+        });
+      }
+    }
+
+    statusEl.textContent = "✅ [4/4] Process completed";
+    term.textContent += `\nAnalysis complete. JSON summary ready.\n\n`;
+    term.textContent += fullText; // tampilkan full JSON hasil AI
+
+  } catch(err){
+    statusEl.textContent = "❌ Terjadi kesalahan: " + err.message;
+    term.textContent += `\nError: ${err.message}`;
   }
 }
-
-
-urlInput.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    runScraper();
-  }
-});
-
-// Add some initial logs for demo
-window.addEventListener('DOMContentLoaded', () => {
-  appendLog('System initialized. Ready for analysis.', 'info');
-  appendLog('Enter a URL and click "Start Analysis" to begin.', 'info');
-});
 </script>
+
 </body>
 </html>
