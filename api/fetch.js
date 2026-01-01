@@ -15,13 +15,14 @@ export default async function handler(req, res) {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
       },
-      timeout: 10000 // 10 detik timeout
+      timeout: 10000, // 10 detik
+      maxRedirects: 5,
     });
 
     res.status(200).json({ html: response.data });
 
   } catch (err) {
-    console.error("Fetch error:", err.message);
+    console.error("Fetch error:", err.response?.status, err.message);
     res.status(500).json({ 
       error: "Failed to fetch URL", 
       details: err.response?.statusText || err.message 
