@@ -52,18 +52,24 @@
     margin-top: 15px;
     font-weight: bold;
     color: #555;
+  }
+  .step {
     display: flex;
     align-items: center;
+    margin-bottom: 6px;
+    font-size: 15px;
   }
   .spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #4f46e5;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #4f46e5;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     animation: spin 1s linear infinite;
-    margin-right: 10px;
+    margin-right: 8px;
   }
+  .check { color: green; margin-right: 8px; }
+  .error { color: red; margin-right: 8px; }
   @keyframes spin {
     0% { transform: rotate(0deg);}
     100% { transform: rotate(360deg);}
@@ -93,23 +99,42 @@ async function fetchAndAnalyze() {
   if (!url) return alert('Masukkan URL dulu');
 
   outputEl.textContent = "";
-  statusEl.innerHTML = `<div class="spinner"></div>Mengambil website...`;
+  statusEl.innerHTML = "";
 
-  // Step 1: fetch HTML
+  // Step tracker
+  const steps = [
+    { text: "Mengambil HTML...", done: false, element: null },
+    { text: "HTML berhasil", done: false, element: null },
+    { text: "Menganalisis dengan AI...", done: false, element: null },
+    { text: "Selesai", done: false, element: null },
+  ];
+
+  // render steps
+  steps.forEach((step, i) => {
+    const div = document.createElement("div");
+    div.className = "step";
+    div.innerHTML = `<span class="spinner"></span>${step.text}`;
+    statusEl.appendChild(div);
+    steps[i].element = div;
+  });
+
   try {
+    // Step 1: fetch HTML
     const fetchRes = await fetch('/api/fetch', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url })
     });
     const fetchData = await fetchRes.json();
-    if (!fetchData.html) {
-      statusEl.textContent = "❌ Gagal fetch HTML";
-      return;
-    }
-    statusEl.innerHTML = `<div class="spinner"></div>Menganalisis AI...`;
-    
-    // Step 2: analyze with NekoLabs AI
+    if (!fetchData.html) throw new Error("Gagal fetch HTML");
+
+    // Step 1 done
+    steps[0].element.innerHTML = `<span class="check">✅</span>${steps[0].text}`;
+    // Step 2: HTML berhasil
+    steps[1].element.innerHTML = `<span class="check">✅</span>${steps[1].text}`;
+
+    // Step 3: AI analyzing
+    steps[2].element.innerHTML = `<span class="spinner"></span>${steps[2].text}`;
     const analyzeRes = await fetch('/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -117,12 +142,22 @@ async function fetchAndAnalyze() {
     });
     const analyzeData = await analyzeRes.json();
 
+    // Step 3 done
+    steps[2].element.innerHTML = `<span class="check">✅</span>${steps[2].text}`;
+
+    // Step 4: selesai
+    steps[3].element.innerHTML = `<span class="check">✅</span>${steps[3].text}`;
+
     outputEl.textContent = analyzeData.summary || "❌ Gagal menganalisis";
-    statusEl.textContent = "✅ Selesai";
 
   } catch (err) {
-    statusEl.textContent = "❌ Terjadi kesalahan: " + err.message;
-    outputEl.textContent = "";
+    // error handling
+    steps.forEach((step) => {
+      if (step.element.innerHTML.includes("spinner")) {
+        step.element.innerHTML = `<span class="error">❌</span>${step.text}`;
+      }
+    });
+    outputEl.textContent = "Terjadi kesalahan: " + err.message;
   }
 }
 </script>
